@@ -1,0 +1,8 @@
+[project]
+name = "bug-triage-env"
+version = "0.1.0"
+description = "OpenEnv Bug Triage Environment"
+authors = [
+  { name = "Deekshitha" }
+]
+dependencies = []
