@@ -1,18 +1,22 @@
 🚀 Bug Report Triage Environment (OpenEnv Compatible)
 
+🔗 Live Demo:
+https://deekshithadjs-bug-triage-env.hf.space/
+
+---
+
 📌 Overview
 
 This project implements an OpenEnv-compatible environment for automated bug triage.
-It simulates a real-world software issue pipeline where an agent classifies bug reports and suggests fixes.
 
-The environment evaluates:
+It simulates a real-world software issue pipeline where an AI agent:
 
-- Bug severity
-- Responsible engineering team
-- Duplicate detection
-- Fix suggestion relevance
+- Classifies incoming bug reports
+- Assigns severity and responsible team
+- Detects duplicates
+- Suggests meaningful technical fixes
 
-It is designed for AI agent benchmarking and real-world debugging scenarios.
+👉 Designed for AI agent evaluation, benchmarking, and real-world debugging workflows
 
 ---
 
@@ -20,7 +24,7 @@ It is designed for AI agent benchmarking and real-world debugging scenarios.
 
 🔹 Observation Space
 
-A natural language bug report string:
+A natural language bug report:
 
 "Sometimes the profile image does not load when navigating back from settings."
 
@@ -28,22 +32,22 @@ A natural language bug report string:
 
 🔹 Action Space
 
-The agent must return a JSON object:
+The agent must return:
 
 {
-  "severity": "low | medium | high",
-  "team": "frontend | backend | infra",
-  "duplicate": "yes | no",
-  "fix_suggestion": "short technical fix explanation"
+"severity": "low | medium | high",
+"team": "frontend | backend | infra",
+"duplicate": "yes | no",
+"fix_suggestion": "short technical fix explanation"
 }
 
 ---
 
 🎯 Reward System
 
-The environment evaluates agent performance on a scale of -3.0 to +4.0.
+The environment evaluates performance on a scale of -3.0 to +4.0
 
-✅ Classification Rewards
+✅ Classification Scoring
 
 Field| Correct| Incorrect
 severity| +1| -1
@@ -62,9 +66,7 @@ Based on keyword relevance:
 
 ---
 
-📊 Accuracy Metric
-
-The environment also returns:
+📊 Additional Metrics
 
 - Accuracy percentage
 - Reward breakdown per field
@@ -74,9 +76,9 @@ The environment also returns:
 📈 Difficulty Levels
 
 Level| Description
-Easy| UI bugs, typos, obvious crashes
+Easy| UI bugs, typos, crashes
 Medium| Caching issues, API delays
-Hard| Race conditions, time sync, infra bugs
+Hard| Race conditions, infra issues
 
 ---
 
@@ -87,40 +89,53 @@ Hard| Race conditions, time sync, infra bugs
 GET /
 
 Response:
-
 {
-  "message": "Bug triage API is running"
+"message": "Bug triage API is running"
 }
 
 ---
 
-🔁 Run Environment
+🔁 Reset Environment
 
 GET /reset
 
-Returns:
+Returns a new randomized bug scenario:
 
 {
-  "observation": "...",
-  "action": {...},
-  "reward": ...,
-  "info": {...}
+"observation": "...",
+"action": {...},
+"reward": ...,
+"info": {...}
 }
+
+---
+
+🧪 How to Test (For Judges)
+
+1. Open the live demo
+2. Visit "/reset"
+3. Refresh multiple times to see different bug scenarios
+
+👉 Confirms:
+
+- Dynamic dataset
+- Working reward system
+- Proper API behavior
 
 ---
 
 🤖 Model Strategy
 
-This project uses a hybrid approach:
+Hybrid approach combining:
 
 - Hugging Face model ("distilbert-base-uncased")
 - Rule-based classification logic
 
-This ensures:
+✅ Benefits
 
 - No API cost 💸
-- Deterministic outputs
-- Hackathon compliance
+- Fully offline execution
+- Deterministic & reproducible results
 
 ---
 
@@ -136,20 +151,20 @@ docker run -p 7860:7860 bug-triage-env
 
 ---
 
-🌐 Access API
+🌐 Local Access
 
 - Home → http://localhost:7860/
 - Reset → http://localhost:7860/reset
 
 ---
 
-🧪 Running Locally (Without Docker)
+🧪 Local Testing (Without Docker)
 
-Demo Scenarios
+▶ Demo Mode
 
 python run.py
 
-Shows:
+Simulates:
 
 - Good agent
 - Partial agent
@@ -157,17 +172,18 @@ Shows:
 
 ---
 
-Interactive Mode
+🎮 Interactive Mode
 
 python run_interactive.py
 
-Manually test your own predictions.
+- Manually act as the agent
+- Test different predictions
 
 ---
 
 🤗 Hugging Face Deployment
 
-This project is designed to run as a Docker-based Hugging Face Space.
+Deployed as a Docker-based Hugging Face Space
 
 Requirements:
 
@@ -194,11 +210,11 @@ Requirements:
 
 🏆 Key Features
 
-- OpenEnv-compliant environment
-- Dynamic reward scoring system
-- Hybrid AI + rule-based agent
-- Dockerized deployment
-- Hugging Face ready
+- ✅ OpenEnv-compliant environment
+- ✅ Dynamic reward scoring system
+- ✅ Hybrid AI + rule-based agent
+- ✅ Fully Dockerized deployment
+- ✅ Hugging Face ready
 
 ---
 
