@@ -1,58 +1,215 @@
-# Bug Report Triage Environment
+🚀 Bug Report Triage Environment (OpenEnv Compatible)
 
-## Project Overview
-This is an OpenEnv-compatible environment designed for bug triage with advanced fix suggestion evaluation. The environment simulates a real-world software issue queue where an AI agent (or testing user) acts as a triage manager. The objective is to correctly categorize incoming bug reports and propose practically helpful technical fixes.
+📌 Overview
 
-## How It Works
-The environment is structured as a single-turn scenario per bug.
+This project implements an OpenEnv-compatible environment for automated bug triage.
+It simulates a real-world software issue pipeline where an agent classifies bug reports and suggests fixes.
 
-- **Observation**: A string detailing an incoming bug report.
-- **Action**: The agent must output a Python dictionary containing:
-  - `severity`: "low", "medium", or "high"
-  - `team`: "frontend", "backend", or "infra"
-  - `duplicate`: "yes" or "no"
-  - `fix_suggestion`: A short string proposing how to resolve the issue.
+The environment evaluates:
 
-The agent's action is then processed by a robust **reward system**, scoring exactly how well the predictions align with the actual ground truth, strictly tracking fractional relevance scoring for fix suggestions.
+- Bug severity
+- Responsible engineering team
+- Duplicate detection
+- Fix suggestion relevance
 
-## Running the Project
+It is designed for AI agent benchmarking and real-world debugging scenarios.
 
-### Scenario Demo (Recommended for Judges)
-Run the following script to watch fully-simulated agents perform within the environment:
-```bash
+---
+
+🧠 Environment Design
+
+🔹 Observation Space
+
+A natural language bug report string:
+
+"Sometimes the profile image does not load when navigating back from settings."
+
+---
+
+🔹 Action Space
+
+The agent must return a JSON object:
+
+{
+  "severity": "low | medium | high",
+  "team": "frontend | backend | infra",
+  "duplicate": "yes | no",
+  "fix_suggestion": "short technical fix explanation"
+}
+
+---
+
+🎯 Reward System
+
+The environment evaluates agent performance on a scale of -3.0 to +4.0.
+
+✅ Classification Rewards
+
+Field| Correct| Incorrect
+severity| +1| -1
+team| +1| -1
+duplicate| +1| -1
+
+---
+
+🛠 Fix Suggestion Scoring
+
+Based on keyword relevance:
+
+- +1.0 → Matches >50% of expected keywords
+- +0.5 → Matches at least one keyword
+- 0.0 → No relevant keywords
+
+---
+
+📊 Accuracy Metric
+
+The environment also returns:
+
+- Accuracy percentage
+- Reward breakdown per field
+
+---
+
+📈 Difficulty Levels
+
+Level| Description
+Easy| UI bugs, typos, obvious crashes
+Medium| Caching issues, API delays
+Hard| Race conditions, time sync, infra bugs
+
+---
+
+⚙️ API Endpoints
+
+🟢 Health Check
+
+GET /
+
+Response:
+
+{
+  "message": "Bug triage API is running"
+}
+
+---
+
+🔁 Run Environment
+
+GET /reset
+
+Returns:
+
+{
+  "observation": "...",
+  "action": {...},
+  "reward": ...,
+  "info": {...}
+}
+
+---
+
+🤖 Model Strategy
+
+This project uses a hybrid approach:
+
+- Hugging Face model ("distilbert-base-uncased")
+- Rule-based classification logic
+
+This ensures:
+
+- No API cost 💸
+- Deterministic outputs
+- Hackathon compliance
+
+---
+
+🐳 Docker Setup
+
+Build Image
+
+docker build -t bug-triage-env .
+
+Run Container
+
+docker run -p 7860:7860 bug-triage-env
+
+---
+
+🌐 Access API
+
+- Home → http://localhost:7860/
+- Reset → http://localhost:7860/reset
+
+---
+
+🧪 Running Locally (Without Docker)
+
+Demo Scenarios
+
 python run.py
-```
-This script acts as the evaluation system showcase by demonstrating three different scenarios:
-1. **Good Agent**: Identifies variables perfectly and scores maximum points.
-2. **Partially Correct Agent**: Assesses some categories correctly and uses some matching context clues for the fix.
-3. **Poor Agent**: Completely hallucinates missing variables and writes an irrelevant fix suggestion.
 
-### Interactive Mode (Manual Testing)
-If you want to step into the role of the AI agent, you can manually interact with the issues! Run:
-```bash
+Shows:
+
+- Good agent
+- Partial agent
+- Poor agent
+
+---
+
+Interactive Mode
+
 python run_interactive.py
-```
-- In this mode, you act as the triage agent.
-- You will be given an observation (bug report) cycling natively across the 3 varying difficulty levels.
-- You will be prompted to manually type the triage responses. Test different inputs and see how the reward system scores you based on what you submit!
 
-## Reward System
-The environment calculates rewards dynamically on a scale of **-3.0 to +4.0**, assigning points for each categorized field:
+Manually test your own predictions.
 
-- **Classification (+1 / -1)**:
-  - `severity`, `team`, and `duplicate` each grant **+1** if exactly correct.
-  - Getting them wrong (or omitting them from the action) penalizes the agent by **-1**.
+---
 
-- **Fix Suggestion Relevance (+1 / +0.5 / 0)**: 
-  The environment checks the agent's fix string against a dynamic set of `expected_fix_keywords`.
-  - **+1.0**: Highly relevant (the fix uses a majority `> 50%` of the expected keywords).
-  - **+0.5**: Partially relevant (the fix identifies at least `> 0%` of the keywords).
-  - **0.0**: Irrelevant (no keywords matched, or fix omitted completely).
+🤗 Hugging Face Deployment
 
-The results also return an isolated **Accuracy Percentage**, displaying exactly how many categories correctly resolved against a total pool of 4 potential points.
+This project is designed to run as a Docker-based Hugging Face Space.
 
-## Difficulty Levels
-The dataset scales across 3 completely fleshed-out difficulty levels:
-- **Easy**: Simple typos, obvious UI bugs, and explicit system crashes.
-- **Medium**: Disguised caching errors, delayed cron jobs, synchronization issues.
-- **Hard**: Timezone drifting issues, intermittent WebSocket leaks, concurrent race transactions.
+Requirements:
+
+- Dockerfile ✔
+- openenv.yaml ✔
+- FastAPI server ✔
+
+---
+
+📂 Project Structure
+
+.
+├── Dockerfile
+├── openenv.yaml
+├── README.md
+├── requirements.txt
+├── dataset.json
+├── env.py
+├── inference.py
+├── run.py
+├── run_interactive.py
+
+---
+
+🏆 Key Features
+
+- OpenEnv-compliant environment
+- Dynamic reward scoring system
+- Hybrid AI + rule-based agent
+- Dockerized deployment
+- Hugging Face ready
+
+---
+
+⚠️ Notes
+
+- No external paid APIs used
+- Fully reproducible environment
+- Designed for evaluation pipelines
+
+---
+
+👩‍💻 Author
+
+Built as part of OpenEnv Hackathon 🚀
