@@ -5,4 +5,12 @@ description = "OpenEnv Bug Triage Environment"
 authors = [
   { name = "Deekshitha" }
 ]
-dependencies = []
+
+dependencies = [
+  "fastapi",
+  "uvicorn",
+  "openenv>=0.2.0"
+]
+
+[project.scripts]
+server = "inference:app"
