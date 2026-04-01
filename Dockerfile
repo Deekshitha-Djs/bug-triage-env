@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 7860
 
 # Default command to run the FastAPI server
-CMD ["uvicorn", "inference:app", "--host", "0.0.0.0", "--port", "7860"]
+CMD ["uvicorn", "iserver.app:app", "--host", "0.0.0.0", "--port", "7860"]
