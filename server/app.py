@@ -1,1 +1,1 @@
-from interface import app
+from inference import app
