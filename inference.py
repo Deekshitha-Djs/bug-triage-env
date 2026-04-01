@@ -80,7 +80,7 @@ def reset_env():
 def home():
     return {"message":"Bug triage API is running"}
 
-@app.get("/reset")
+@app.post("/reset")
 def reset():
     sample = random.choice(dataset)
     return sample
