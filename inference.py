@@ -3,6 +3,10 @@ from fastapi import FastAPI
 from transformers import pipeline
 import uvicorn
 from env import BugTriageEnv
+import random
+
+with open("dataset.json") as f:
+    dataset = json.load(f)
 
 app = FastAPI()
 
@@ -75,5 +79,11 @@ def reset_env():
 @app.get("/")
 def home():
     return {"message":"Bug triage API is running"}
+
+@app.get("/reset")
+def reset():
+    sample = random.choice(dataset)
+    return sample
+
 if __name__ == "__main__":
     uvicorn.run("inference:app", host="0.0.0.0", port=7860)
