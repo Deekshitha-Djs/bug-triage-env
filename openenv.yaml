@@ -1,0 +1,43 @@
+environment:
+  name: "BugTriageEnv"
+  version: "1.0.0"
+  description: "An environment for agents to triage bug reports by predicting severity, assigned team, duplicate status, and a fix suggestion."
+  type: "text-based"
+  interfaces:
+    - "python"
+    
+observation_space:
+  type: "text"
+  description: "A string containing a user-submitted bug report or issue ticket."
+
+action_space:
+  type: "dict"
+  schema:
+    severity:
+      type: "string"
+      allowed_values: ["low", "medium", "high"]
+    team:
+      type: "string"
+      allowed_values: ["frontend", "backend", "infra"]
+    duplicate:
+      type: "string"
+      allowed_values: ["yes", "no"]
+    fix_suggestion:
+      type: "string"
+      description: "A short sentence or phrase suggesting a potential fix."
+
+reward_function:
+  description: "Maximum reward is +4. Agent gains/loses points based on correctly predicting the 4 action fields."
+  components:
+    severity_match: "+1 if match, else -1"
+    team_match: "+1 if match, else -1"
+    duplicate_match: "+1 if match, else -1"
+    fix_suggestion_relevance: "+1 if contains relevant keywords, else 0"
+
+dataset:
+  source: "dataset.json"
+  format: "JSON"
+  levels:
+    - "easy"
+    - "medium"
+    - "hard"

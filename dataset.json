@@ -1,0 +1,242 @@
+[
+  {
+    "difficulty": "easy",
+    "text": "App crashes immediately after clicking the login button with valid credentials.",
+    "severity": "high",
+    "team": "backend",
+    "duplicate": "no",
+    "expected_fix_keywords": ["null", "exception", "api", "validation", "crash"]
+  },
+  {
+    "difficulty": "easy",
+    "text": "Typo on the landing page: 'Wlcome' instead of 'Welcome'.",
+    "severity": "low",
+    "team": "frontend",
+    "duplicate": "yes",
+    "expected_fix_keywords": ["typo", "text", "spelling", "html"]
+  },
+  {
+    "difficulty": "easy",
+    "text": "The submit button is overlapping with the footer text on mobile devices.",
+    "severity": "low",
+    "team": "frontend",
+    "duplicate": "no",
+    "expected_fix_keywords": ["css", "margin", "padding", "overlap", "responsive"]
+  },
+  {
+    "difficulty": "easy",
+    "text": "Getting a 404 error when clicking on the 'About Us' link in the navigation bar.",
+    "severity": "medium",
+    "team": "frontend",
+    "duplicate": "no",
+    "expected_fix_keywords": ["router", "link", "url", "path"]
+  },
+  {
+    "difficulty": "easy",
+    "text": "User registration fails with 'Email already exists' even for new emails.",
+    "severity": "high",
+    "team": "backend",
+    "duplicate": "no",
+    "expected_fix_keywords": ["database", "validation", "unique", "query"]
+  },
+  {
+    "difficulty": "easy",
+    "text": "Profile picture upload fails if the image is exactly 2MB, but works for smaller images.",
+    "severity": "medium",
+    "team": "backend",
+    "duplicate": "no",
+    "expected_fix_keywords": ["limit", "size", "validation", "bytes"]
+  },
+  {
+    "difficulty": "easy",
+    "text": "The dark mode toggle doesn't change the background color of the sidebar.",
+    "severity": "low",
+    "team": "frontend",
+    "duplicate": "no",
+    "expected_fix_keywords": ["css", "theme", "color", "dark"]
+  },
+  {
+    "difficulty": "easy",
+    "text": "Password reset emails are spelling 'Password' as 'Passwrod'.",
+    "severity": "low",
+    "team": "backend",
+    "duplicate": "yes",
+    "expected_fix_keywords": ["typo", "template", "email", "spelling"]
+  },
+  {
+    "difficulty": "easy",
+    "text": "Dashboard shows '$NaN' instead of the updated account balance after deposit.",
+    "severity": "high",
+    "team": "frontend",
+    "duplicate": "no",
+    "expected_fix_keywords": ["number", "parse", "format", "float"]
+  },
+  {
+    "difficulty": "easy",
+    "text": "The 'Terms of Service' PDF link downloads a broken file.",
+    "severity": "medium",
+    "team": "infra",
+    "duplicate": "yes",
+    "expected_fix_keywords": ["file", "path", "storage", "s3"]
+  },
+  {
+    "difficulty": "medium",
+    "text": "Sometimes the profile image does not load when navigating back from the settings page.",
+    "severity": "medium",
+    "team": "frontend",
+    "duplicate": "no",
+    "expected_fix_keywords": ["cache", "reload", "state", "image", "render"]
+  },
+  {
+    "difficulty": "medium",
+    "text": "Users with special characters in their username cannot reset their password.",
+    "severity": "medium",
+    "team": "backend",
+    "duplicate": "yes",
+    "expected_fix_keywords": ["encoding", "regex", "escape", "query"]
+  },
+  {
+    "difficulty": "medium",
+    "text": "Search results sometimes show duplicated items if you scroll too fast.",
+    "severity": "medium",
+    "team": "frontend",
+    "duplicate": "no",
+    "expected_fix_keywords": ["debounce", "pagination", "duplicate", "state"]
+  },
+  {
+    "difficulty": "medium",
+    "text": "The API occasionally returns a 500 error when processing large CSV uploads.",
+    "severity": "high",
+    "team": "backend",
+    "duplicate": "no",
+    "expected_fix_keywords": ["memory", "stream", "chunk", "timeout"]
+  },
+  {
+    "difficulty": "medium",
+    "text": "Notifications are delayed by 5-10 minutes during the morning hours.",
+    "severity": "medium",
+    "team": "infra",
+    "duplicate": "no",
+    "expected_fix_keywords": ["queue", "worker", "delay", "cron"]
+  },
+  {
+    "difficulty": "medium",
+    "text": "When I log out from tab A, tab B still shows me as logged in until I refresh.",
+    "severity": "medium",
+    "team": "frontend",
+    "duplicate": "no",
+    "expected_fix_keywords": ["storage", "event", "sync", "token"]
+  },
+  {
+    "difficulty": "medium",
+    "text": "The 'Export to Excel' button takes over 30 seconds and sometimes fails silently.",
+    "severity": "medium",
+    "team": "backend",
+    "duplicate": "no",
+    "expected_fix_keywords": ["async", "timeout", "background", "job"]
+  },
+  {
+    "difficulty": "medium",
+    "text": "Customers report that applying a discount code works, but the total is off by a few cents.",
+    "severity": "high",
+    "team": "backend",
+    "duplicate": "no",
+    "expected_fix_keywords": ["float", "precision", "rounding", "math"]
+  },
+  {
+    "difficulty": "medium",
+    "text": "The caching server seems to ignore headers for the /api/products endpoint.",
+    "severity": "medium",
+    "team": "infra",
+    "duplicate": "no",
+    "expected_fix_keywords": ["redis", "header", "config", "cache"]
+  },
+  {
+    "difficulty": "medium",
+    "text": "Certain text fields lose user input if the screen is rotated on Android tablets.",
+    "severity": "medium",
+    "team": "frontend",
+    "duplicate": "yes",
+    "expected_fix_keywords": ["lifecycle", "state", "unmount", "persist"]
+  },
+  {
+    "difficulty": "hard",
+    "text": "Occasional 502 Bad Gateway errors during peak hours on the payment processing endpoint.",
+    "severity": "high",
+    "team": "infra",
+    "duplicate": "no",
+    "expected_fix_keywords": ["scale", "timeout", "load", "balancer", "gateway"]
+  },
+  {
+    "difficulty": "hard",
+    "text": "Memory leak detected when websocket connection is interrupted and reconnects multiple times.",
+    "severity": "high",
+    "team": "infra",
+    "duplicate": "no",
+    "expected_fix_keywords": ["leak", "garbage", "collection", "socket", "close", "instance"]
+  },
+  {
+    "difficulty": "hard",
+    "text": "There is a rare race condition where two users booking the same seat simultaneously both get confirmed.",
+    "severity": "high",
+    "team": "backend",
+    "duplicate": "no",
+    "expected_fix_keywords": ["lock", "transaction", "isolation", "mutex", "concurrency"]
+  },
+  {
+    "difficulty": "hard",
+    "text": "The app randomly crashes entirely on iOS devices older than iPhone X after 20 minutes of usage.",
+    "severity": "high",
+    "team": "frontend",
+    "duplicate": "no",
+    "expected_fix_keywords": ["memory", "heap", "native", "leak"]
+  },
+  {
+    "difficulty": "hard",
+    "text": "Intermittent deadlocks in the database occurring at midnight UTC every Sunday.",
+    "severity": "high",
+    "team": "backend",
+    "duplicate": "no",
+    "expected_fix_keywords": ["cron", "job", "deadlock", "index", "vacuum", "maintenance"]
+  },
+  {
+    "difficulty": "hard",
+    "text": "Some European users are inexplicably routed to the US-East data center, causing high latency.",
+    "severity": "medium",
+    "team": "infra",
+    "duplicate": "yes",
+    "expected_fix_keywords": ["dns", "geo", "routing", "latency"]
+  },
+  {
+    "difficulty": "hard",
+    "text": "Authentication tokens are occasionally considered invalid 5 seconds before their actual expiration time.",
+    "severity": "low",
+    "team": "backend",
+    "duplicate": "no",
+    "expected_fix_keywords": ["clock", "drift", "ntp", "sync", "skew"]
+  },
+  {
+    "difficulty": "hard",
+    "text": "A microservice enters a crash loop backoff when the message broker is restarted.",
+    "severity": "high",
+    "team": "infra",
+    "duplicate": "no",
+    "expected_fix_keywords": ["retry", "backoff", "reconnect", "health", "probe"]
+  },
+  {
+    "difficulty": "hard",
+    "text": "Data corruption observed in user preferences JSON column when concurrent updates happen.",
+    "severity": "high",
+    "team": "backend",
+    "duplicate": "no",
+    "expected_fix_keywords": ["jsonb", "merge", "patch", "concurrent", "lock"]
+  },
+  {
+    "difficulty": "hard",
+    "text": "The auto-scaling group scales up properly but fails to drain connections before scaling down.",
+    "severity": "medium",
+    "team": "infra",
+    "duplicate": "no",
+    "expected_fix_keywords": ["drain", "lifecycle", "hook", "sigterm", "graceful"]
+  }
+]
