@@ -8,6 +8,11 @@ API_BASE_URL = os.getenv("API_BASE_URL", "")
 MODEL_NAME = os.getenv("MODEL_NAME", "distilbert-base-uncased-finetuned-sst-2-english")
 HF_TOKEN = os.getenv("HF_TOKEN")
 
+try:
+    from openai import OpenAI
+except:
+    pass
+
 # Load dataset
 with open("dataset.json") as f:
     dataset = json.load(f)
