@@ -79,24 +79,31 @@ def home():
 def reset():
     print("START")
 
-    # Step 1: reset env
+    # Step 1
+    print("STEP 1: Reset environment")
     observation = env.reset(difficulty="medium")
-    print("STEP: env reset")
 
-    # Step 2: run model
+    # Step 2
+    print("STEP 2: Model inference")
     truncated_obs = observation[:512]
     hf_result = hf_classifier(truncated_obs)[0]
-    print("STEP: model inference done")
 
-    # Step 3: classify
+    # Step 3
+    print("STEP 3: Classification")
     action = classify_bug(observation, hf_result)
-    print("STEP: classification done")
 
-    # Step 4: env step
+    # Step 4
+    print("STEP 4: Env step")
     obs, reward, done, info = env.step(action)
-    print("STEP: env step done")
 
     print("END")
+
+    return {
+        "observation": obs,
+        "action": action,
+        "reward": reward,
+        "info": info
+    }
 
     return {
         "observation": obs,
