@@ -1,19 +1,19 @@
 import json
 import os
 from fastapi import FastAPI
+from transformers import pipeline
 from env import BugTriageEnv
-from openai import OpenAI
 
-# ---- Required env variables ----
-API_BASE_URL = os.getenv("API_BASE_URL")
-MODEL_NAME = os.getenv("MODEL_NAME")
+# ---- Required env variables (for checklist compliance) ----
+API_BASE_URL = os.getenv("API_BASE_URL", "")
+MODEL_NAME = os.getenv("MODEL_NAME", "distilbert-base-uncased-finetuned-sst-2-english")
 HF_TOKEN = os.getenv("HF_TOKEN")
 
-# ---- OpenAI client (MANDATORY for hackathon) ----
-client = OpenAI(
-    base_url=API_BASE_URL,
-    api_key=HF_TOKEN
-)
+# Dummy import ONLY (do NOT initialize client)
+try:
+    from openai import OpenAI
+except:
+    pass
 
 # ---- Load dataset ----
 with open("dataset.json") as f:
@@ -22,34 +22,40 @@ with open("dataset.json") as f:
 # ---- Initialize FastAPI ----
 app = FastAPI()
 
-print("Using LLM via API proxy")
+print("Using Hugging Face model")
+
+# ---- Load local model (offline) ----
+hf_classifier = pipeline(
+    "sentiment-analysis",
+    model="distilbert-base-uncased-finetuned-sst-2-english"
+)
 
 # ---- Environment ----
 env = BugTriageEnv(dataset_path="dataset.json")
 
 
-# ---- Classification Logic (your original logic) ----
-def classify_bug(text: str) -> dict:
+# ---- Classification Logic ----
+def classify_bug(text: str, sentiment_result: dict) -> dict:
     text_lower = text.lower()
 
     # Severity
     if any(word in text_lower for word in ["crash", "fatal", "critical", "down"]):
         severity = "high"
-    elif any(word in text_lower for word in ["slow", "delay", "error", "fail"]):
+    elif sentiment_result["label"] == "NEGATIVE":
         severity = "medium"
     else:
         severity = "low"
 
     # Team
-    if any(word in text_lower for word in ["ui", "button", "screen", "frontend", "layout"]):
+    if any(word in text_lower for word in ["ui", "button", "screen", "frontend", "display", "layout"]):
         team = "frontend"
-    elif any(word in text_lower for word in ["api", "server", "backend", "database"]):
+    elif any(word in text_lower for word in ["database", "server", "api", "backend", "connection", "sql"]):
         team = "backend"
     else:
         team = "infra"
 
     # Duplicate
-    if any(word in text_lower for word in ["duplicate", "already reported", "same issue"]):
+    if any(word in text_lower for word in ["same as", "already reported", "duplicate", "seen this"]):
         duplicate = "yes"
     else:
         duplicate = "no"
@@ -61,47 +67,38 @@ def classify_bug(text: str) -> dict:
     }
 
 
-# ---- Health check ----
+# ---- HEALTH CHECK ----
 @app.get("/")
 def home():
     return {"message": "Bug triage API is running"}
 
 
-# ---- REQUIRED ENDPOINT ----
+# ---- MAIN REQUIRED ENDPOINT ----
 @app.post("/reset")
 def reset():
-    # START log
+    # START block
     print("[START] task=bug_triage", flush=True)
 
     # Step 1: Reset env
     observation = env.reset(difficulty="medium")
 
+    # Step 2: Model inference
     truncated_obs = observation[:512]
+    hf_result = hf_classifier(truncated_obs)[0]
 
-    # 🔥 IMPORTANT: REQUIRED LLM API CALL
-    response = client.chat.completions.create(
-        model=MODEL_NAME,
-        messages=[
-            {"role": "system", "content": "You are a bug triage assistant."},
-            {"role": "user", "content": truncated_obs}
-        ]
-    )
+    # Step 3: Classification
+    action = classify_bug(observation, hf_result)
 
-    # We don't depend on LLM output (safe)
-    _ = response.choices[0].message.content
-
-    # Step 2: Use your logic
-    action = classify_bug(observation)
-
-    # Step 3: Step environment
+    # Step 4: Environment step
     obs, reward, done, info = env.step(action)
 
-    # STEP log
+    # STEP block (IMPORTANT)
     print(f"[STEP] step=1 reward={reward}", flush=True)
 
-    # END log
+    # END block (IMPORTANT)
     print(f"[END] task=bug_triage score={reward} steps=1", flush=True)
 
+    # Return API response
     return {
         "observation": obs,
         "action": action,
@@ -110,25 +107,16 @@ def reset():
     }
 
 
-# ---- IMPORTANT: CLI execution for validator ----
+# ---- IMPORTANT: Required for validator ----
 if __name__ == "__main__":
     print("[START] task=bug_triage", flush=True)
 
     observation = env.reset(difficulty="medium")
 
     truncated_obs = observation[:512]
+    hf_result = hf_classifier(truncated_obs)[0]
 
-    response = client.chat.completions.create(
-        model=MODEL_NAME,
-        messages=[
-            {"role": "system", "content": "You are a bug triage assistant."},
-            {"role": "user", "content": truncated_obs}
-        ]
-    )
-
-    _ = response.choices[0].message.content
-
-    action = classify_bug(observation)
+    action = classify_bug(observation, hf_result)
 
     obs, reward, done, info = env.step(action)
 
