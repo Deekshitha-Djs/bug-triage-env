@@ -77,26 +77,27 @@ def home():
 # ---- MAIN REQUIRED ENDPOINT ----
 @app.post("/reset")
 def reset():
-    print("START")
+    # START block
+    print("[START] task=bug_triage", flush=True)
 
     # Step 1
-    print("STEP 1: Reset environment")
     observation = env.reset(difficulty="medium")
 
     # Step 2
-    print("STEP 2: Model inference")
     truncated_obs = observation[:512]
     hf_result = hf_classifier(truncated_obs)[0]
 
     # Step 3
-    print("STEP 3: Classification")
     action = classify_bug(observation, hf_result)
 
     # Step 4
-    print("STEP 4: Env step")
     obs, reward, done, info = env.step(action)
 
-    print("END")
+    # STEP block (IMPORTANT)
+    print(f"[STEP] step=1 reward={reward}", flush=True)
+
+    # END block (IMPORTANT)
+    print(f"[END] task=bug_triage score={reward} steps=1", flush=True)
 
     return {
         "observation": obs,
@@ -105,9 +106,4 @@ def reset():
         "info": info
     }
 
-    return {
-        "observation": obs,
-        "action": action,
-        "reward": reward,
-        "info": info
-    }
+   
