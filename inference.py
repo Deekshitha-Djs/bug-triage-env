@@ -99,4 +99,19 @@ def reset():
         "info": info
     }
 
+if __name__ == "__main__":
+    print("[START] task=bug_triage", flush=True)
+
+    observation = env.reset(difficulty="medium")
+
+    truncated_obs = observation[:512]
+    hf_result = hf_classifier(truncated_obs)[0]
+
+    action = classify_bug(observation, hf_result)
+
+    obs, reward, done, info = env.step(action)
+
+    print(f"[STEP] step=1 reward={reward}", flush=True)
+    print(f"[END] task=bug_triage score={reward} steps=1", flush=True)
+
    
