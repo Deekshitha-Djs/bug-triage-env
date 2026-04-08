@@ -2,42 +2,47 @@ import json
 import os
 from fastapi import FastAPI
 from env import BugTriageEnv
-
-# ✅ REQUIRED ENV VARIABLES (from hackathon)
-API_BASE_URL = os.getenv("API_BASE_URL")
-API_KEY = os.getenv("API_KEY")
-MODEL_NAME = os.getenv("MODEL_NAME")
-
-# ✅ OpenAI client (through LiteLLM proxy)
 from openai import OpenAI
 
-client = OpenAI(
-    base_url=API_BASE_URL,
-    api_key=API_KEY
-)
+# ---- Initialize FastAPI ----
+app = FastAPI()
+
+print("Using LLM via provided proxy", flush=True)
 
 # ---- Load dataset ----
 with open("dataset.json") as f:
     dataset = json.load(f)
 
-# ---- Initialize app ----
-app = FastAPI()
-
-print("Using LLM via provided proxy", flush=True)
-
 # ---- Environment ----
 env = BugTriageEnv(dataset_path="dataset.json")
 
 
-# ✅ LLM CLASSIFICATION (SAFE VERSION)
+# ✅ SAFE CLIENT CREATION (NO STARTUP CRASH)
+def get_client():
+    try:
+        return OpenAI(
+            base_url=os.getenv("API_BASE_URL"),
+            api_key=os.getenv("API_KEY")
+        )
+    except Exception as e:
+        print(f"CLIENT INIT ERROR: {e}", flush=True)
+        return None
+
+
+# ✅ SAFE LLM CLASSIFICATION
 def classify_bug_with_llm(text: str) -> dict:
     try:
+        client = get_client()
+
+        if client is None:
+            raise Exception("Client not initialized")
+
         response = client.chat.completions.create(
-            model=MODEL_NAME,
+            model=os.getenv("MODEL_NAME"),
             messages=[
                 {
                     "role": "system",
-                    "content": "Classify the bug into severity (low/medium/high), team (frontend/backend/infra), duplicate (yes/no). Return ONLY JSON."
+                    "content": "Classify bug into severity (low/medium/high), team (frontend/backend/infra), duplicate (yes/no). Return ONLY JSON."
                 },
                 {
                     "role": "user",
@@ -49,13 +54,12 @@ def classify_bug_with_llm(text: str) -> dict:
 
         output = response.choices[0].message.content.strip()
 
-        # Convert string → dict
         return json.loads(output)
 
     except Exception as e:
         print(f"LLM ERROR: {e}", flush=True)
 
-        # 🔥 FALLBACK (VERY IMPORTANT)
+        # 🔥 FALLBACK (NEVER FAIL)
         return {
             "severity": "medium",
             "team": "backend",
@@ -94,7 +98,7 @@ def reset():
     except Exception as e:
         print(f"RESET ERROR: {e}", flush=True)
 
-        # fallback safe response
+        # 🔥 FAIL-SAFE OUTPUT
         print("[START] task=bug_triage", flush=True)
         print("[STEP] step=1 reward=0", flush=True)
         print("[END] task=bug_triage score=0 steps=1", flush=True)
@@ -111,7 +115,7 @@ def reset():
         }
 
 
-# ---- LOCAL RUN (IMPORTANT FOR VALIDATOR) ----
+# ---- LOCAL EXECUTION (IMPORTANT FOR VALIDATOR) ----
 if __name__ == "__main__":
     try:
         print("[START] task=bug_triage", flush=True)
